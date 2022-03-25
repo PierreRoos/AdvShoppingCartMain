@@ -14,7 +14,7 @@ def setUp():
     driver.maximize_window()
     driver.implicitly_wait(30)
     driver.get(locators.hmpg_url)
-    if driver.current_url == locators.hmpg_url:  # and driver.title == locators.hmpg_title:  # title doesn't work
+    if driver.current_url == locators.hmpg_url and locators.hmpg_title in driver.title:
         print(f'{locators.app} launched successfully.')
         print(f'{locators.app} homepage url:{driver.current_url}, title: {driver.title}')
         sleep(0.25)
@@ -26,7 +26,7 @@ def setUp():
 
 def tearDown():
     if driver is not None:
-        print('----- TEAR DOWN FUNCTION ----------------------------------------------------')
+        print('----- TEAR DOWN FUNCTION ----------------------------------------')
         print(f'The test is completed at: {datetime.datetime.now()}')
         sleep(2)
         driver.close()
