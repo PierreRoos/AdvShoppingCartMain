@@ -83,20 +83,8 @@ def check_fullname():
     print('----- CHECK FULLNAME FUNCTION -----------------------------')
     driver.find_element(By.ID, 'menuUserLink').click()
     sleep(1)
-    # Click  My account
-    # driver.find_element(By.XPATH, '//div/label[contains(@role., "My account")]').click()
-    # driver.find_element(By.XPATH, '//label[contains(@role=., "My account")]').click()
-    # driver.find_element(By.XPATH, '//*[@style="display: block;"])/../label[contains(., "My account")]').click()
-    # driver.find_element(By.XPATH, '//div[contains(., "display: block;")]/../label[contains(., "My account")]').click()
-    # driver.find_element(By.XPATH, '/a/div[contains(., "display: block;")]/label[contains(., "My account")]').click()
-    # driver.find_element(By.XPATH, '//div[contains(., "loginMiniTitle")]/../label[contains(.,"My account")]').click()
-    # driver.find_element(By.XPATH, '//div/label[contains(., "My_account")]').click()
-    # driver.find_element(By.XPATH, '//div/label[contains(., "My account")]').click()
-    # driver.find_element(By.XPATH, "//label[contains(., 'My account')]").click()
-    # driver.find_element(By.XPATH, '//label[contains(., "My account")]').click()
-    # driver.find_element(By.PARTIAL_LINK_TEXT, 'My account').click()
-    # driver.find_element(By.LINK_TEXT, 'My account').click()
-    # Select(driver.find_element(By.ID, 'loginMiniTitle')).select_by_visible_text('My account')
+    driver.find_element(By.XPATH, '//*[@id="loginMiniTitle"]/label[contains(., "My account")]').click()
+    # driver.find_element(By.CSS_SELECTOR, 'div#loginMiniTitle > label[translate = "My_account"]').click()
     sleep(3)
     if driver.find_element(By.XPATH, f'//label[contains(., "{locators.first_name} {locators.last_name}" )]'):
         print(f'User first and last name displayed: {locators.first_name} {locators.last_name} ')
@@ -108,10 +96,8 @@ def check_orders():
     print('----- CHECK ORDERS FUNCTION -----------------------------')
     driver.find_element(By.ID, 'menuUserLink').click()  # Click USER icon at top right of page
     sleep(0.5)
-    # Click  My orders
-    # driver.find_element(By.XPATH, '//label[contains(., "My orders")]').click()  # doesnt work
-    # driver.find_element(By.XPATH, '//div[contains(., "display: block;")]/../label[contains(., "My orders")]').click()
-    # sleep(0.5)
+    driver.find_element(By.XPATH, '//*[@id="loginMiniTitle"]/label[contains(., "My orders")]').click()
+    sleep(0.5)
     if driver.find_element(By.XPATH, f'//label[contains(., "- No orders -" )]'):
         print(' This user has no orders. ')
     else:
@@ -123,6 +109,8 @@ def sign_out():
     driver.find_element(By.ID, 'menuUserLink').click()  # Click USER icon at top right of page
     sleep(2)
     #driver.find_element(By.XPATH, '//label[contains(., "Sign out")]').click()  # doesnt work
+    driver.find_element(By.XPATH, '//*[@id="loginMiniTitle"]/label[contains(., "Sign out")]').click()
+    sleep(0.5)
     print(f'User {locators.username} has signed out.')
 
 
@@ -154,7 +142,8 @@ def delete_account():
     print('----- DELETE ACCOUNT FUNCTION -----------------------------')
     driver.find_element(By.ID, 'menuUserLink').click()  # Click USER icon at top right of page
     sleep(0.5)
-    # driver.find_element(By.XPATH, '//label[contains(., "My account")]').click()  # doesnt work
+    driver.find_element(By.XPATH, '//*[@id="loginMiniTitle"]/label[contains(., "My account")]').click()
+    sleep(2)
     driver.find_element(By.CLASS_NAME, 'deleteBtnText').click()
     sleep(1)
     driver.find_element(By.CLASS_NAME, 'deletePopupBtn.deleteRed').click()
