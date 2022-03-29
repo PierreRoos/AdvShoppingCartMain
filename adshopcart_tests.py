@@ -8,6 +8,7 @@ class AdShopCartTestCases(unittest.TestCase):
     @staticmethod  # signal to Unittest that this is a function inside class (vs, @classmethod)
     def test_scenario():  # test in name is mandatory
         methods.setUp()
+        methods.check_homepage()
         methods.register()
         methods.check_fullname()
         methods.check_orders()

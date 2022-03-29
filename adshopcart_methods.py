@@ -15,7 +15,7 @@ driver = webdriver.Chrome(service=s)
 
 
 def setUp():
-    print(f'----- SET UP FUNCTION --------------------------------------------')
+    print(f'----- setUp -------------------------------------------')
     print(f'The test started at: {datetime.datetime.now()}')
     driver.maximize_window()
     driver.implicitly_wait(30)
@@ -29,19 +29,71 @@ def setUp():
         print(f'current url: {driver.current_url}, page title: {driver.title}')
 
 
-def tearDown():
-    if driver is not None:
-        print('----- TEAR DOWN FUNCTION ------------------------')
-        print(f'The test is completed at: {datetime.datetime.now()}')
-        sleep(2)
-        driver.close()
-        driver.quit()
+def check_homepage():
+    print(f'----- check_homepage -----------------------------------')
+    print('--- check SPEAKERS, TABLETS, HEADPHONES, LAPTOPS, and MICE texts are displayed.')
+    id_list = ['speakersTxt', 'tabletsTxt', 'headphonesTxt', 'laptopsTxt', 'miceTxt']
+    title_list = ['SPEAKERS', 'TABLETS', 'HEADPHONES', 'LAPTOPS', 'MICE']
+
+    for i in range(len(id_list)):
+        id, title, = id_list[i], title_list[i]
+        if driver.find_element(By.ID, id).is_displayed():
+            sleep(0.5)
+            print(f'{title} is displayed')
+
+    print('--- check SPECIAL OFFER, POPULAR ITEMS, CONTACT US, and OUR PRODUCTS links at the top menu are clickable.')
+    driver.find_element(By.LINK_TEXT, 'SPECIAL OFFER').click()
+    sleep(0.5)
+    assert driver.find_element(By.XPATH, '//h3[contains(., "SPECIAL OFFER")]')
+    sleep(0.5)
+    print('SPECIAL OFFER page is displayed')
+
+    driver.find_element(By.LINK_TEXT, 'POPULAR ITEMS').click()
+    sleep(0.5)
+    assert driver.find_element(By.XPATH, '//h3[contains(., "POPULAR ITEMS")]')
+    sleep(0.5)
+    print('POPULAR ITEMS page is displayed')
+
+    driver.find_element(By.LINK_TEXT, 'CONTACT US').click()
+    sleep(0.5)
+    assert driver.find_element(By.XPATH, '//h1[contains(., "CONTACT US")]')
+    sleep(0.5)
+    print('CONTACT US page is displayed')
+
+    driver.find_element(By.LINK_TEXT, 'OUR PRODUCTS').click()
+    sleep(0.5)
+    assert driver.current_url == locators.hmpg_url  # homepage is products page
+    sleep(0.5)
+    print('OUR PRODUCTS page is homepage is displayed')
+
+    print('--- Check main logo is displayed.')
+    dvantage = driver.find_element(By.XPATH, '//span[contains(., "dvantage")]')
+    demo = driver.find_element(By.XPATH, '//span[contains(., "DEMO")]')
+    if dvantage and demo:
+        sleep(0.5)
+        print('Main logo is displayed')
+
+    print('--- Check CONTACT US form works. Click CONTINUE SHOPPING button.')
+    Select(driver.find_element(By.NAME, 'categoryListboxContactUs')).select_by_index(2)
+    sleep(0.5)
+    Select(driver.find_element(By.NAME, 'productListboxContactUs')).select_by_index(2)
+    sleep(0.5)
+    driver.find_element(By.NAME, 'emailContactUs').send_keys(locators.email)
+    sleep(0.5)
+    driver.find_element(By.NAME, 'subjectTextareaContactUs').send_keys(locators.subject)
+    sleep(0.5)
+    driver.find_element(By.ID, 'send_btnundefined').click()
+    sleep(0.5)
+    # driver.find_element(By.LINK_TEXT, ' CONTINUE SHOPPING ').click()
+    driver.find_element(By.XPATH, '//a[contains(., "CONTINUE SHOPPING")]').click()
+    sleep(0.5)
+    print('CONTACT US form was sent. We are back at the homepage.')
 
 
 def register():
-    print('----- REGISTER FUNCTION -----------------------------')
+    print('----- register --------------------------------------------')
     driver.find_element(By.ID, 'menuUserLink').click()  # Click USER icon at top right of page
-    sleep(.5)
+    sleep(1)
     driver.find_element(By.LINK_TEXT, 'CREATE NEW ACCOUNT').click()
     sleep(.5)
     if driver.current_url == locators.register_page_url:
@@ -80,7 +132,7 @@ def register():
 
 
 def check_fullname():
-    print('----- CHECK FULLNAME FUNCTION -----------------------------')
+    print('----- check_fullname -------------------------------------')
     driver.find_element(By.ID, 'menuUserLink').click()
     sleep(1)
     driver.find_element(By.XPATH, '//*[@id="loginMiniTitle"]/label[contains(., "My account")]').click()
@@ -93,7 +145,7 @@ def check_fullname():
 
 
 def check_orders():
-    print('----- CHECK ORDERS FUNCTION -----------------------------')
+    print('----- check_orders -------------------------------------')
     driver.find_element(By.ID, 'menuUserLink').click()  # Click USER icon at top right of page
     sleep(0.5)
     driver.find_element(By.XPATH, '//*[@id="loginMiniTitle"]/label[contains(., "My orders")]').click()
@@ -105,17 +157,17 @@ def check_orders():
 
 
 def sign_out():
-    print('----- SIGN OUT FUNCTION -----------------------------')
+    print('----- sign_out --------------------------------------')
     driver.find_element(By.ID, 'menuUserLink').click()  # Click USER icon at top right of page
     sleep(2)
-    #driver.find_element(By.XPATH, '//label[contains(., "Sign out")]').click()  # doesnt work
+    # driver.find_element(By.XPATH, '//label[contains(., "Sign out")]').click()  # doesnt work
     driver.find_element(By.XPATH, '//*[@id="loginMiniTitle"]/label[contains(., "Sign out")]').click()
     sleep(0.5)
     print(f'User {locators.username} has signed out.')
 
 
-def sign_in(username, password):
-    print('----- SIGN IN FUNCTION -----------------------------')
+def sign_in(username, password):  # kind of works,not ideal
+    print('----- sign_in --------------------------------------------')
     sleep(1)
     driver.find_element(By.ID, 'menuUserLink').click()  # Click USER icon at top right of page
     sleep(2)
@@ -125,21 +177,34 @@ def sign_in(username, password):
     sleep(0.5)
     driver.find_element(By.ID, 'sign_in_btnundefined').click()
     sleep(0.5)
-    try:
+    # try:
+    #     if driver.find_element(By.XPATH, f'//a/span[contains(., "{locators.username}")]'):
+    #         sleep(0.25)
+    #         print(f'User {locators.username} has signed in.')
+    #     else: # won't ever go here
+    #         assert driver.find_element(By.XPATH, '//label[contains(., "Incorrect user name or password.")]')
+    #         sleep(0.25)
+    #         print('Error message displayed: Incorrect user name or password.')
+    # except NoSuchElementException as nse:
+    #     print('Element not found.')
+    #     print('Error message displayed: Incorrect user name or password.')
+    #     print(f'User {locators.username} has not signed in.')
+
+    if driver.find_element(By.XPATH, '//label[@id = "signInResultMessage"]').text == 'Incorrect user name or password.':
+        # if driver.find_element(By.XPATH, '//label[contains(., "Incorrect user name or password.")]'): # gives error
+        sleep(0.5)
+        print('Error message displayed: Incorrect user name or password.')
+    else:
         if driver.find_element(By.XPATH, f'//a/span[contains(., "{locators.username}")]'):
-            sleep(0.25)
+            sleep(0.5)
             print(f'User {locators.username} has signed in.')
         else:
-            assert driver.find_element(By.XPATH, '//label[contains(., "Incorrect user name or password.")]')
+            print(f'User {locators.username} has not signed in.')
             sleep(0.25)
-            print('Error message displayed: Incorrect user name or password.')
-    except NoSuchElementException as nse:
-        print('Element not found.')
-        print(f'User {locators.username} has not signed in.')
 
 
 def delete_account():
-    print('----- DELETE ACCOUNT FUNCTION -----------------------------')
+    print('----- delete_account -----------------------------------')
     driver.find_element(By.ID, 'menuUserLink').click()  # Click USER icon at top right of page
     sleep(0.5)
     driver.find_element(By.XPATH, '//*[@id="loginMiniTitle"]/label[contains(., "My account")]').click()
@@ -151,9 +216,17 @@ def delete_account():
     print('User account has been deleted')
 
 
+def tearDown():
+    if driver is not None:
+        print('----- tearDown() -------------------------------------------')
+        print(f'The test is completed at: {datetime.datetime.now()}')
+        sleep(2)
+        driver.close()
+        driver.quit()
 
 
 # setUp()
+# check_homepage()
 # register()
 # check_fullname()
 # check_orders()
