@@ -2,7 +2,6 @@ import datetime
 from time import sleep
 
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support.ui import Select
 
 import adshopcart_locators as locators
 from selenium import webdriver
@@ -208,7 +207,7 @@ def delete_account():
     driver.find_element(By.ID, 'menuUserLink').click()  # Click USER icon at top right of page
     sleep(0.5)
     driver.find_element(By.XPATH, '//*[@id="loginMiniTitle"]/label[contains(., "My account")]').click()
-    sleep(2)
+    sleep(3)
     driver.find_element(By.CLASS_NAME, 'deleteBtnText').click()
     sleep(1)
     driver.find_element(By.CLASS_NAME, 'deletePopupBtn.deleteRed').click()
